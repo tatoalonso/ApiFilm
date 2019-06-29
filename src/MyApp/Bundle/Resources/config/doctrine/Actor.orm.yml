@@ -1,0 +1,15 @@
+
+MyApp\Component\ApiFilm\Domain\Actor:
+  type: entity
+  #repositoryClass: MyApp\Bundle\ApiFilmBundle\Actor\Repository\MySqlActorRepository
+  table: actor
+  id:
+      id:
+          type: integer
+          generator: { strategy: AUTO }
+  fields:
+       name:
+          type: string
+          length: 200
+          unique: true
+

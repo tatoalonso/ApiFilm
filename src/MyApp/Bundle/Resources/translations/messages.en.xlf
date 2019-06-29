@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>label.error</source>
+                <target>Error</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>label.film</source>
+                <target>Film</target>
+            </trans-unit>
+		    <trans-unit id="3">
+                <source>label.name</source>
+                <target>The name of the film is:</target>
+            </trans-unit>
+		    <trans-unit id="4">
+                <source>label.description</source>
+                <target>The description of the film is:</target>
+            </trans-unit>
+		    <trans-unit id="5">
+                <source>label.actor</source>
+                <target>The actor name is:</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

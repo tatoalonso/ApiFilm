@@ -1,0 +1,21 @@
+MyApp\Component\ApiFilm\Domain\Film:
+  type: entity
+  table: film
+  id:
+    id:
+      type: integer
+      generator: { strategy: AUTO }
+  fields:
+    name:
+      type: string
+      length: 200
+    description:
+      type: text
+  cascade: persist
+  manyToOne:
+    actor:
+      targetEntity: Actor
+      joinColumn:
+        name: actor_id
+        referencedColumnName: id
+      fetch: EAGER

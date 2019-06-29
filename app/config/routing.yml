@@ -1,0 +1,56 @@
+#app:
+#    resource: "@ApiFilmBundle/Controller/"
+#    type:     annotation
+
+
+#  api
+film_create:
+  path: /film/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Film\Controller\FilmController::newFilm }
+  methods: [POST]
+
+film_delete:
+  path: /film/{id}/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Film\Controller\FilmController::deleteFilm}
+  methods: [DELETE]
+
+film_update:
+  path: /film/{id}/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Film\Controller\FilmController::updateFilm }
+  methods: [PUT]
+
+film_list:
+  path: /film/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Film\Controller\FilmController::listFilm }
+  methods: [GET]
+
+actor_create:
+  path: /actor/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Actor\Controller\ActorController::newActor }
+  methods: [POST]
+
+actor_list:
+  path: /actor/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Actor\Controller\ActorController::listActor }
+  methods: [GET]
+
+actor_delete:
+  path: /actor/{id}/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Actor\Controller\ActorController::deleteActor }
+  methods: [DELETE]
+
+# user pages
+
+actor_list_html:
+  path: /{_locale}/page/actor/{id}/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Actor\Controller\ActorController::listActorHtml }
+  methods: [GET]
+  requirements:
+    _locale: en|es
+
+film_list_html:
+  path: /{_locale}/page/film/{id}/
+  defaults: { _controller: \MyApp\Bundle\ApiFilmBundle\Film\Controller\FilmController::listFilmHtml }
+  methods: [GET]
+  requirements:
+    _locale: en|es

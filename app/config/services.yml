@@ -1,0 +1,123 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/service_container.html
+
+parameters:
+  cachenamespace: ""
+  cachelifetime: 0
+  cachedirectory: "%kernel.cache_dir%/filmcache/"
+
+services:
+# Use Cases
+  app.apifilm.usecase.newactor:
+    class: MyApp\Component\ApiFilm\Application\UseCases\RegisterNewActorUseCase
+    arguments:
+      actorRepository: '@app.apifilm.repository.actor'
+
+  app.apifilm.usecase.listactors:
+    class: MyApp\Component\ApiFilm\Application\UseCases\ListActorsUseCase
+    arguments:
+      actorRepository: '@app.apifilm.repository.actor'
+
+  app.apifilm.usecase.listactorbyid:
+    class: MyApp\Component\ApiFilm\Application\UseCases\ListActorByIdUseCase
+    arguments:
+      actorRepository: '@app.apifilm.repository.actor'
+
+  app.apifilm.usecase.deleteactor:
+    class: MyApp\Component\ApiFilm\Application\UseCases\DeleteActorUseCase
+    arguments:
+      actorRepository: '@app.apifilm.repository.actor'
+      filmRepository: '@app.apifilm.repository.film'
+      dispatcher: '@event_dispatcher'
+
+  app.apifilm.usecase.newfilm:
+    class: MyApp\Component\ApiFilm\Application\UseCases\RegisterNewFilmUseCase
+    arguments:
+      actorRepository: '@app.apifilm.repository.actor'
+      filmRepository: '@app.apifilm.repository.film'
+      dispatcher: '@event_dispatcher'
+
+  app.apifilm.usecase.updatefilm:
+    class: MyApp\Component\ApiFilm\Application\UseCases\UpdateFilmUseCase
+    arguments:
+      actorRepository: '@app.apifilm.repository.actor'
+      filmRepository: '@app.apifilm.repository.film'
+      dispatcher: '@event_dispatcher'
+
+  app.apifilm.usecase.listfilms:
+    class: MyApp\Component\ApiFilm\Application\UseCases\ListFilmsUseCase
+    arguments:
+      filmRepository: '@app.apifilm.repository.film'
+
+  app.apifilm.usecase.deletefilm:
+    class: MyApp\Component\ApiFilm\Application\UseCases\DeleteFilmUseCase
+    arguments:
+      filmRepository: '@app.apifilm.repository.film'
+      dispatcher: '@event_dispatcher'
+
+  app.apifilm.usecase.listfilmbyid:
+    class: MyApp\Component\ApiFilm\Application\UseCases\ListFilmByIdUseCase
+    arguments:
+      actorRepository: '@app.apifilm.repository.film'
+
+# Repository
+
+  app.apifilm.repository.actor:
+    class: MyApp\Bundle\ApiFilmBundle\Actor\Repository\MySqlActorRepository
+    arguments:
+      em: '@doctrine.orm.entity_manager'
+
+  app.apifilm.repository.film:
+    class: MyApp\Bundle\ApiFilmBundle\Film\Repository\MySqlFilmRepository
+    arguments:
+      em: '@doctrine.orm.entity_manager'
+
+  app.apifilm.decorator.repository.film:
+    class: MyApp\Bundle\ApiFilmBundle\Film\Repository\MySqlFilmRepositoryDecorator
+    public: false
+    decorates: app.apifilm.repository.film
+    arguments:
+      - "@app.apifilm.decorator.repository.film.inner"
+      - "@app.service.cache"
+
+# Console Commands
+
+  app.command.film.create:
+    class: MyApp\Bundle\Command\RegisterNewFilmCommand
+    arguments: ['@app.apifilm.usecase.newfilm']
+    tags:
+       - { name: console.command }
+
+  app.command.film.list:
+    class: MyApp\Bundle\Command\ListFilmsCommand
+    arguments: ['@app.apifilm.usecase.listfilms']
+    tags:
+      - { name: console.command }
+
+  app.command.film.update:
+    class: MyApp\Bundle\Command\UpdateFilmCommand
+    arguments: ['@app.apifilm.usecase.updatefilm']
+    tags:
+      - { name: console.command }
+
+  app.command.film.delete:
+    class: MyApp\Bundle\Command\DeleteFilmCommand
+    arguments: ['@app.apifilm.usecase.deletefilm']
+    tags:
+      - { name: console.command }
+
+# Cache service & delete cache command
+
+  app.service.cache:
+    class: MyApp\Bundle\Services\CacheService
+    tags:
+      - { name: kernel.event_listener, event: film.updated }
+      - { name: kernel.event_listener, event: film.deleted }
+      - { name: kernel.event_listener, event: film.created }
+      - { name: kernel.event_listener, event: actor.deleted }
+
+  app.command.cache.delete:
+    class: MyApp\Bundle\Command\DeleteCacheCommand
+    arguments: ['@app.service.cache']
+    tags:
+      - { name: console.command }
